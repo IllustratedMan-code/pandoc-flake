@@ -11,14 +11,14 @@
       overlays = [ haskellNix.overlay
         (final: prev: {
           # This overlay adds our project to pkgs
-          pandoc =
+          pandoc-flake =
             final.haskell-nix.project' {
               src = pandoc;
               compiler-nix-name = "ghc8107";
-              name = "pandoc";
+              #name = "pandoc";
               # This is used by `nix develop .` to open a shell for use with
               # `cabal`, `hlint` and `haskell-language-server`
-              projectFileName = "pandoc.cabal";
+              projectFileName = "cabal.project";
               shell.tools = {
                 cabal = {};
                 hlint = {};
@@ -28,15 +28,15 @@
               shell.buildInputs = with pkgs; [
                 nixpkgs-fmt
               ];
-              shell.crossPlatform = p: [p.ghcjs];
+              #shell.crossPlatforms = p: [p.ghcjs];
               # This adds `js-unknown-ghcjs-cabal` to the shell.
             };
         })
       ];
       pkgs = import nixpkgs { inherit system overlays; inherit (haskellNix) config; };
-      flake = pkgs.pandoc.flake {
+      flake = pkgs.pandoc-flake.flake{
         # This adds support for `nix build .#js-unknown-ghcjs-cabal:hello:exe:hello`
-        crossPlatforms = p: [p.ghcjs];
+        #crossPlatforms = p: [p.ghcjs];
       };
     in flake // {
       # Built by `nix build .`
